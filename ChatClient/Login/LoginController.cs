@@ -11,13 +11,20 @@ public class LoginController
         _loginService = loginService;
     }
 
-    public async void Login()
+    public async Task<User> Login()
     {
         var name = getInputName();
         var pwd = getInputPwd();
 
-        var res = await _loginService.Login(name, pwd);
-        Console.WriteLine(res);
+        var user = await _loginService.Login(name, pwd);
+
+        if (user == null)
+        {
+            Console.WriteLine("로그인 실패");
+            user = await Login();
+        }
+
+        return user;
     }
 
     private string getInputName()
