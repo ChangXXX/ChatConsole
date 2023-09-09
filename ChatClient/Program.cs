@@ -1,4 +1,5 @@
-﻿using ChatClient.Login;
+﻿using ChatClient.Chat;
+using ChatClient.Login;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Headers;
 
@@ -20,5 +21,7 @@ var provider = collection.BuildServiceProvider();
 // login
 LoginController login = new LoginController(provider.GetService<ILoginService>());
 User currUser = login.Login().GetAwaiter().GetResult();
-Console.WriteLine("HIHI");
+
 // chat
+ChatController chat = new ChatController(currUser);
+chat.run().GetAwaiter().GetResult();
