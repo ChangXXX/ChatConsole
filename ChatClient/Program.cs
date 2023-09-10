@@ -16,6 +16,7 @@ collection.AddHttpClient(
 );
 
 collection.AddSingleton<ILoginService, LoginService>();
+collection.AddSingleton<IUserService, UserService>();
 var provider = collection.BuildServiceProvider();
 
 // login
@@ -23,5 +24,5 @@ LoginController login = new LoginController(provider.GetService<ILoginService>()
 User currUser = login.Login().GetAwaiter().GetResult();
 
 // chat
-ChatController chat = new ChatController(currUser);
+ChatController chat = new ChatController(provider.GetService<IUserService>(), currUser);
 chat.run().GetAwaiter().GetResult();

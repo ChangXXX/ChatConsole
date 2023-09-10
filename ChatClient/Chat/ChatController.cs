@@ -9,14 +9,16 @@ public class ChatController
 {
 
     private readonly HubConnection _connection;
+    private readonly IUserService _userService;
     private readonly User _user;
     private static string SendMessageToAll = "SendMessageToAll";
     private static string ReceiveAllMessage = "ReceiveAllMessage";
     private static string ReceiveSystemMessage = "ReceiveSystemMessage";
     private static string Divider = "--------------------------------";
 
-    public ChatController(User user) {
+    public ChatController(IUserService userService, User user) {
         _user = user;
+        _userService = userService;
 
         _connection = new HubConnectionBuilder()
             .WithUrl("https://localhost:7239/chatHub/", options =>
@@ -71,7 +73,7 @@ public class ChatController
                     sendAll();
                     break;
                 case "2":
-
+                    _userService.GetUsers();
                     break;
                 default:
                     isRunning = false;
