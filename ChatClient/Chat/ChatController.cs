@@ -34,6 +34,7 @@ public class ChatController
             await _connection.StartAsync();
         };
 
+        _userService.SetAuthorization(_user.Jwt);
         setHubMsg();
     }
 
@@ -73,13 +74,24 @@ public class ChatController
                     sendAll();
                     break;
                 case "2":
-                    _userService.GetUsers();
+                    printUsers(await _userService.GetUsers());
                     break;
                 default:
                     isRunning = false;
                     break;
             }
         }
+    }
+
+    private void printUsers(List<string> users)
+    {
+        Console.WriteLine(Divider);
+        Console.WriteLine("유저 목록");
+        for (int i = 0; i < users.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}.  {users[i]}");
+        }
+        Console.WriteLine(Divider);
     }
 
     private async void sendAll()

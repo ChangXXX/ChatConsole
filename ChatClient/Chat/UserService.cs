@@ -1,13 +1,6 @@
-﻿using ChatClient.Login;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace ChatClient.Chat;
 class UserService: IUserService
@@ -20,6 +13,11 @@ class UserService: IUserService
         _httpClient = factory.CreateClient("Base");
     }
 
+    public void SetAuthorization(string jwt)
+    {
+        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+    }
+
     public async Task<List<string>> GetUsers()
     {
         using (var response = await _httpClient.GetAsync($"{_location}"))
@@ -27,8 +25,8 @@ class UserService: IUserService
             var users = new List<string>();
             if (response.IsSuccessStatusCode)
             {
-                var body = response.Content.ReadAsStringAsync().Result;
-                Console.WriteLine(body);
+                
+                users = response.Content.ReadFromJsonAsync<List<string>>().Result;
             }
             return users;
         }

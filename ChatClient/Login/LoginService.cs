@@ -1,5 +1,6 @@
 ﻿
 using System.Net;
+using System.Net.Http.Headers;
 
 namespace ChatClient.Login;
 
@@ -20,8 +21,9 @@ public class LoginService : ILoginService
             User user = null;
             if (response.StatusCode == HttpStatusCode.OK)
             {
+                string jwt = response.Headers.GetValues("Jwt").FirstOrDefault();
                 user = new User(name, password);
-                user.Jwt = response.Headers.GetValues("Jwt").FirstOrDefault();
+                user.Jwt = jwt;
                 return user;
             }
             else

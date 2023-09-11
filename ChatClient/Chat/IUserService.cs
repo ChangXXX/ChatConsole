@@ -9,5 +9,6 @@ namespace ChatClient.Chat;
 public interface IUserService
 {
 
+    public void SetAuthorization(string jwt);
     public Task<List<String>> GetUsers();
 }
