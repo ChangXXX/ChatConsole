@@ -64,16 +64,27 @@ public class ChatController
             Console.WriteLine(Divider);
             Console.WriteLine($"{_user.Name}님 안녕하세요 아래 항목을 골라주세요");
             Console.WriteLine("전체에게 메세지 보내기 :: 1");
-            Console.WriteLine("유저리스트 보기 :: 2");
+            Console.WriteLine("채팅방 만들기 :: 2");
+            Console.WriteLine("활성화된 채팅방 보기 :: 3");
+            Console.WriteLine("유저리스트 보기 :: 4");
             Console.WriteLine("종료를 원하시면 아무 텍스트나 입력해주세요");
             Console.WriteLine(Divider);
-            var input = Console.ReadLine();
-            switch (input)
+            var behavior = Enum.Parse(typeof(InputBehavior), Console.ReadLine(), true);
+
+            switch (behavior)
             {
-                case "1":
+                case InputBehavior.SendAll:
                     sendAll();
                     break;
-                case "2":
+                case InputBehavior.CreateRoom:
+                    if (createRoom())
+                    {
+                        // TODO move chat room
+                    }
+                    break;
+                case InputBehavior.ActivationRoom:
+                    break;
+                case InputBehavior.GetUsers:
                     printUsers(await _userService.GetUsers());
                     break;
                 default:
@@ -81,6 +92,11 @@ public class ChatController
                     break;
             }
         }
+    }
+
+    private bool createRoom()
+    {
+        return false;
     }
 
     private void printUsers(List<string> users)
