@@ -15,6 +15,7 @@ public class ChatController
     private static string ReceiveAllMessage = "ReceiveAllMessage";
     private static string ReceiveSystemMessage = "SystemMessage";
     private static string CreateRoom = "CreateRoom";
+    private static string EnterManyUserRoom = "EnterManyUserRoom";
     private static string Divider = "--------------------------------";
 
     public ChatController(IUserService userService, User user) {
@@ -67,7 +68,8 @@ public class ChatController
             Console.WriteLine("전체에게 메세지 보내기 :: 1");
             Console.WriteLine("채팅방 만들기 :: 2");
             Console.WriteLine("활성화된 채팅방 보기 :: 3");
-            Console.WriteLine("유저리스트 보기 :: 4");
+            Console.WriteLine("빠른 입장 :: 4");
+            Console.WriteLine("유저리스트 보기 :: 5");
             Console.WriteLine("종료를 원하시면 아무 텍스트나 입력해주세요");
             Console.WriteLine(Divider);
             var behavior = Enum.Parse(typeof(InputBehavior), Console.ReadLine(), true);
@@ -83,6 +85,9 @@ public class ChatController
                 case InputBehavior.ActivationRoom:
                     openRoom();
                     break;
+                case InputBehavior.JoinManyUserRoom:
+                    await openManyUserRoom();
+                    break;
                 case InputBehavior.GetUsers:
                     printUsers(await _userService.GetUsers());
                     break;
@@ -93,9 +98,16 @@ public class ChatController
         }
     }
 
-    private void openRoom()
+    private async Task openRoom()
     {
+        Console.WriteLine(Divider);
+        
+        Console.WriteLine(Divider);
+    }
 
+    private async Task openManyUserRoom()
+    {
+        await _connection.InvokeAsync(EnterManyUserRoom);
     }
 
     private async Task createRoom()
