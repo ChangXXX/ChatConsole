@@ -13,7 +13,8 @@ public class ChatController
     private readonly User _user;
     private static string SendMessageToAll = "SendMessageToAll";
     private static string ReceiveAllMessage = "ReceiveAllMessage";
-    private static string ReceiveSystemMessage = "ReceiveSystemMessage";
+    private static string ReceiveSystemMessage = "SystemMessage";
+    private static string CreateRoom = "CreateRoom";
     private static string Divider = "--------------------------------";
 
     public ChatController(IUserService userService, User user) {
@@ -77,12 +78,10 @@ public class ChatController
                     sendAll();
                     break;
                 case InputBehavior.CreateRoom:
-                    if (createRoom())
-                    {
-                        // TODO move chat room
-                    }
+                    await createRoom();
                     break;
                 case InputBehavior.ActivationRoom:
+                    openRoom();
                     break;
                 case InputBehavior.GetUsers:
                     printUsers(await _userService.GetUsers());
@@ -94,9 +93,54 @@ public class ChatController
         }
     }
 
-    private bool createRoom()
+    private void openRoom()
     {
-        return false;
+
+    }
+
+    private async Task createRoom()
+    {
+        Console.WriteLine(Divider);
+        var users = await _userService.GetUsers();
+        printUsers(users);
+
+        var newUsers = new List<string>();
+
+        while(true)
+        {
+            Console.WriteLine("대화를 시작할 유저 이름을 입력해주세요(최대 4명) / 그만 입력하고 싶으시면 -1 입력");
+            var input = Console.ReadLine();
+            if (input == "-1")
+            {
+                break;
+            }
+
+
+            if (newUsers.Contains(input))
+            {
+                Console.WriteLine("이미 추가한 유저입니다.");
+            }
+            else if (users.Contains(input))
+            {
+                newUsers.Add(input);
+                Console.WriteLine($"추가한 유저 리스트 : {String.Join(" / ", newUsers)}");
+                if (newUsers.Count == 4)
+                {
+                    break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("존재하지 않는 유저입니다");
+            }
+        }
+        if (newUsers.Count > 0)
+        {
+            newUsers.Add(_user.Name);
+            await _connection.InvokeAsync(CreateRoom, newUsers);
+        }
+        
+        Console.WriteLine(Divider);
     }
 
     private void printUsers(List<string> users)
