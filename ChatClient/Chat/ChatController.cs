@@ -16,6 +16,7 @@ public class ChatController
     private static string ReceiveSystemMessage = "SystemMessage";
     private static string CreateRoom = "CreateRoom";
     private static string EnterManyUserRoom = "EnterManyUserRoom";
+    private static string PrintRooms = "PrintRooms";
     private static string Divider = "--------------------------------";
 
     public ChatController(IUserService userService, User user) {
@@ -55,6 +56,14 @@ public class ChatController
             Console.WriteLine($"시스템 메세지: {msg}");
             Console.WriteLine(Divider);
         });
+
+        _connection.On<List<Room>>(PrintRooms, (room) =>
+        {
+            for (int i = 0; i < room.Count; i++)
+            {
+                Console.WriteLine($"채팅방 번호 : {room[i].Id} 유저 : {string.Join(", ", room[i].Users)}");
+            }
+        });
     }
 
     public async Task run()
@@ -83,7 +92,7 @@ public class ChatController
                     await createRoom();
                     break;
                 case InputBehavior.ActivationRoom:
-                    openRoom();
+                    getRooms();
                     break;
                 case InputBehavior.JoinManyUserRoom:
                     await openManyUserRoom();
@@ -98,10 +107,10 @@ public class ChatController
         }
     }
 
-    private async Task openRoom()
+    private async Task getRooms()
     {
         Console.WriteLine(Divider);
-        
+        await _connection.InvokeAsync(PrintRooms);
         Console.WriteLine(Divider);
     }
 
